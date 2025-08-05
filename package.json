@@ -10,33 +10,13 @@
     "format": "prettier --write '**/*.{js,json,html,css}'"
   },
   "dependencies": {
-    "@cloudflare/wrangler": "^1.22.0",
+    "@cloudflare/wrangler": "^3.0.0",
     "axios": "^1.6.2"
   },
   "devDependencies": {
     "prettier": "^3.1.0"
   },
   "engines": {
-    "node": ">=18.0.0"
-  },
-  "keywords": [
-    "ai",
-    "assistant",
-    "cloudflare",
-    "worker"
-  ],
-  "author": "Your Name",
-  "license": "MIT",
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "node": ">=20.0.0"
   }
 }
