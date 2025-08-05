@@ -33,7 +33,7 @@
 
 ### Installation
 ```bash
-git clone https://github.com/your-username/wayne-ai-assistant.git
+git clone https://github.com/Smartburme/wayne-ai-assistant.git
 cd wayne-ai-assistant
 npm install
 ```
@@ -109,7 +109,7 @@ npm run deploy
 ## 🌐 Live Demo
 
 Access the live demo at:  
-[https://wayne-ai-assistant.your-domain.workers.dev](https://wayne-ai-assistant.your-domain.workers.dev)
+[https://wayne-ai-assistant.com](https://wayne-ai-assistant.mysvm.workers.dev)
 
 ## 📚 Documentation
 
