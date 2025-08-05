@@ -74,10 +74,10 @@ wayne-ai-assistant/
 │   ├── scripts/
 │   │   ├── script.ts
 │   │   └── worker.ts
-│   ├── index.html (loader)
 │   └── main.html (main chat page)
 ├── src/
 │   └── worker.js
+├── index.html
 ├── wrangler.toml
 ├── package.json
 ├── tsconfig.json
