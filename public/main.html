@@ -5,31 +5,196 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WAYNE AI Assistant</title>
     <link rel="icon" href="assets/images/icon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/styles/styles.css">
+    <meta name="theme-color" content="#121212">
 </head>
 <body>
     <div class="app-container">
-        <header class="app-header">
-            <div class="logo-container">
-                <img src="assets/images/icon.png" alt="WAYNE AI Logo" class="logo">
-                <h1>WAYNE AI</h1>
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <button class="new-chat-btn" id="new-chat-btn">
+                    <i class="fas fa-plus"></i>
+                    <span>New Chat</span>
+                </button>
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
             </div>
-            <nav class="main-nav">
-                <button id="new-chat-btn" class="nav-btn">New Chat</button>
-                <button id="history-btn" class="nav-btn">History</button>
-                <button id="settings-btn" class="nav-btn">Settings</button>
-            </nav>
-        </header>
+            
+            <div class="chat-history" id="chat-history-list">
+                <!-- Dynamic content will be loaded here -->
+                <div class="history-placeholder">
+                    <i class="fas fa-comments"></i>
+                    <p>Your chat history will appear here</p>
+                </div>
+            </div>
+            
+            <div class="user-section">
+                <div class="user-profile">
+                    <div class="avatar">U</div>
+                    <div class="user-info">
+                        <span class="username">User</span>
+                        <span class="user-email">user@example.com</span>
+                    </div>
+                </div>
+                <button class="settings-btn" id="settings-btn">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </aside>
 
-        <main class="chat-container">
-            <div id="chat-history" class="chat-history"></div>
+        <!-- Main Chat Area -->
+        <main class="chat-main">
+            <header class="chat-header">
+                <button class="mobile-menu-btn" id="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 id="chat-title">WAYNE AI</h1>
+                <div class="header-actions">
+                    <button class="header-btn" id="dark-mode-toggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="header-btn" id="fullscreen-toggle">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </header>
+            
+            <div class="chat-container" id="chat-container">
+                <div class="welcome-screen" id="welcome-screen">
+                    <div class="welcome-content">
+                        <img src="assets/images/icon.png" alt="WAYNE AI" class="welcome-logo">
+                        <h2>Welcome to WAYNE AI</h2>
+                        <p>How can I assist you today?</p>
+                        
+                        <div class="quick-prompts">
+                            <button class="prompt-btn" data-prompt="Explain quantum computing in simple terms">
+                                <i class="fas fa-atom"></i>
+                                Explain quantum computing
+                            </button>
+                            <button class="prompt-btn" data-prompt="Suggest creative birthday gift ideas">
+                                <i class="fas fa-gift"></i>
+                                Birthday gift ideas
+                            </button>
+                            <button class="prompt-btn" data-prompt="Help me write a professional email">
+                                <i class="fas fa-envelope"></i>
+                                Professional email help
+                            </button>
+                            <button class="prompt-btn" data-prompt="What's the latest in AI research?">
+                                <i class="fas fa-robot"></i>
+                                Latest AI research
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="messages-container" id="messages-container">
+                    <!-- Chat messages will be dynamically inserted here -->
+                </div>
+            </div>
+            
             <div class="input-container">
-                <input type="text" id="user-input" placeholder="Ask WAYNE anything...">
-                <button id="send-btn">Send</button>
+                <div class="input-wrapper">
+                    <button class="input-action-btn" id="attach-btn">
+                        <i class="fas fa-paperclip"></i>
+                    </button>
+                    <div class="text-input-wrapper">
+                        <textarea 
+                            id="user-input" 
+                            placeholder="Message WAYNE AI..." 
+                            rows="1"
+                            spellcheck="true"
+                        ></textarea>
+                        <button class="send-btn" id="send-btn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <button class="input-action-btn" id="voice-input-btn">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                </div>
+                <div class="input-footer">
+                    <p class="disclaimer">
+                        WAYNE AI may produce inaccurate information. Consider verifying important details.
+                    </p>
+                </div>
             </div>
         </main>
+        
+        <!-- Settings Modal -->
+        <div class="modal" id="settings-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Settings</h3>
+                    <button class="close-modal" id="close-settings">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="settings-section">
+                        <h4>Appearance</h4>
+                        <div class="theme-options">
+                            <button class="theme-option" data-theme="light">
+                                <i class="fas fa-sun"></i> Light
+                            </button>
+                            <button class="theme-option" data-theme="dark">
+                                <i class="fas fa-moon"></i> Dark
+                            </button>
+                            <button class="theme-option" data-theme="system">
+                                <i class="fas fa-desktop"></i> System
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h4>AI Preferences</h4>
+                        <div class="form-group">
+                            <label for="ai-model">Model Version</label>
+                            <select id="ai-model">
+                                <option value="wayne-pro">WAYNE Pro (Recommended)</option>
+                                <option value="wayne-fast">WAYNE Fast</option>
+                                <option value="wayne-legacy">WAYNE Legacy</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="ai-temp">Creativity Level</label>
+                            <input type="range" id="ai-temp" min="0" max="2" step="0.1" value="0.7">
+                            <div class="range-labels">
+                                <span>Precise</span>
+                                <span>Balanced</span>
+                                <span>Creative</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h4>Data & Privacy</h4>
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="save-history" checked>
+                            <label for="save-history">Save chat history</label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="improve-model">
+                            <label for="improve-model">Help improve WAYNE (anonymous data)</label>
+                        </div>
+                        <button class="btn-danger" id="clear-data">
+                            <i class="fas fa-trash"></i> Clear All Chat Data
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" id="cancel-settings">Cancel</button>
+                    <button class="btn-primary" id="save-settings">Save Changes</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script src="public/scripts/script.js" type="module"></script>
+    <!-- Notification Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script src="scripts/script.js" type="module"></script>
 </body>
-</html>
+                                                        </html>
