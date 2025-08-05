@@ -1,32 +1,18 @@
 name = "wayne-ai-assistant"
-main = "worker/index.js"
-compatibility_date = "2024-03-01"
-
-[build]
-command = "echo 'No build needed for JavaScript worker'"
-
-[env]
-# These will be set via GitHub Actions secrets
-OPENAI_API_KEY = "@@OPENAI_API_KEY"
-GEMINI_API_KEY = "@@GEMINI_API_KEY"
-STABILITY_API_KEY = "@@STABILITY_API_KEY"
+type = "javascript"
+account_id = "c58ef0375e8c53127a457a3b155dd006"
+workers_dev = true
+compatibility_date = "2025-08-05"
 
 [vars]
-AI_ASSISTANT_NAME = "WAYNE"
-DEFAULT_MODEL = "gemini"
-MAX_REQUEST_SIZE = "1MB"
-
-[[routers]]
-rule = "/*"
-script = "wayne-ai-assistant"
+ENV = "production"
 
 [triggers]
-crons = []
+routes = ["https://wayne-ai-assistant.mysvm.workers.dev/*"]
 
-[limits]
-cpu_ms = 50
+# Optional settings for better dev experience
+[build]
+command = "npm install"
 
-# For production deployment
-[deployment]
-environment = "production"
-workers_dev = true
+[dev]
+port = 8787
