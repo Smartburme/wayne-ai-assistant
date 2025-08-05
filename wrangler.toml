@@ -1,5 +1,4 @@
 name = "wayne-ai-assistant"
-type = "Javascript"
 account_id = "c58ef0375e8c53127a457a3b155dd006"
 workers_dev = true
 compatibility_date = "2025-08-05"
