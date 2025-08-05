@@ -1,9 +1,8 @@
-name: Deploy WAYNE AI Assistant
+name: Deploy WAYNE AI
 
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:
 
 jobs:
   deploy:
@@ -11,17 +10,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Node.js
+      - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
           
-      - name: Install dependencies
-        run: npm install
-        
-      - name: Install Wrangler globally
-        run: npm install -g wrangler
+      - name: Install dependencies with npm
+        run: |
+          npm install
+          npm install -g wrangler
       
       - name: Deploy to Cloudflare
         run: wrangler deploy
