@@ -1,231 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>WAYNE AI - Loading...</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-
-    body {
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #1a1a2e, #16213e);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #fff;
-      overflow: hidden;
-      position: relative;
-    }
-
-    /* Animated gradient background overlay */
-    body::before {
-      content: "";
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(270deg, #6e48aa, #9d50bb, #4776e6, #6e48aa);
-      background-size: 800% 800%;
-      animation: gradientShift 20s ease infinite;
-      z-index: 0;
-      filter: brightness(0.7);
-      border-radius: 0;
-    }
-
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    .loader-container {
-      position: relative;
-      z-index: 10;
-      text-align: center;
-      max-width: 320px;
-      padding: 0 20px;
-    }
-
-    .nero-logo {
-      width: 130px;
-      height: 130px;
-      margin: 0 auto 30px auto;
-      animation: pulse 3s ease-in-out infinite;
-      filter: drop-shadow(0 0 8px #9d50bb);
-    }
-
-    /* Gradient stroke for SVG circle and paths */
-    .nero-logo svg circle,
-    .nero-logo svg path {
-      stroke-linejoin: round;
-      stroke-linecap: round;
-      stroke-width: 6;
-      stroke: url(#gradientStroke);
-      transition: stroke 0.3s ease;
-    }
-
-    h1 {
-      font-size: 3rem;
-      font-weight: 700;
-      margin-bottom: 18px;
-      background: linear-gradient(90deg, #6e48aa, #9d50bb);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      color: transparent;
-      user-select: none;
-      letter-spacing: 0.06em;
-    }
-
-    p.subtitle {
-      font-size: 1.1rem;
-      margin-bottom: 28px;
-      opacity: 0.85;
-      user-select: none;
-      font-weight: 500;
-    }
-
-    .progress-bar {
-      width: 100%;
-      max-width: 320px;
-      height: 6px;
-      background: rgba(255 255 255 / 0.15);
-      border-radius: 3px;
-      overflow: hidden;
-      box-shadow: 0 0 8px #9d50bbaa inset;
-      margin: 0 auto 24px auto;
-    }
-
-    .progress {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #6e48aa, #9d50bb, #4776e6);
-      border-radius: 3px;
-      animation: loadProgress 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-      box-shadow: 0 0 12px #9d50bbaa;
-    }
-
-    @keyframes loadProgress {
-      0% { width: 0%; }
-      100% { width: 100%; }
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.07); }
-    }
-
-    .status-text {
-      font-size: 1rem;
-      font-weight: 600;
-      opacity: 0.85;
-      user-select: none;
-      min-height: 24px;
-      transition: opacity 0.3s ease;
-      letter-spacing: 0.02em;
-    }
-
-    /* Fade effect for status text */
-    .fade-out {
-      opacity: 0;
-      transition: opacity 0.5s ease;
-    }
-    .fade-in {
-      opacity: 0.85;
-      transition: opacity 0.5s ease;
-    }
-
-    /* Responsive */
-    @media (max-width: 600px) {
-      .nero-logo {
-        width: 90px;
-        height: 90px;
-        margin-bottom: 20px;
-      }
-
-      h1 {
-        font-size: 2.2rem;
-        margin-bottom: 14px;
-      }
-
-      p.subtitle {
-        font-size: 1rem;
-        margin-bottom: 20px;
-      }
-
-      .progress-bar {
-        max-width: 260px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WAYNE AI - Loading</title>
+    <link rel="icon" href="assets/images/icon.png">
+    <style>
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #121212;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+        }
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loader-text {
+            color: white;
+            margin-top: 20px;
+            font-family: Arial, sans-serif;
+        }
+    </style>
 </head>
 <body>
-  <div class="loader-container" role="main" aria-label="Loading Wayne AI Assistant">
-    <div class="nero-logo" aria-hidden="true">
-      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Wayne AI Logo">
-        <defs>
-          <linearGradient id="gradientStroke" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#6e48aa"/>
-            <stop offset="50%" stop-color="#9d50bb"/>
-            <stop offset="100%" stop-color="#4776e6"/>
-          </linearGradient>
-        </defs>
-        <circle cx="50" cy="50" r="45" fill="none" />
-        <path d="M30,30 L70,30 L70,70 L30,70 Z" fill="none" />
-        <path d="M40,40 L60,40 L60,60 L40,60 Z" fill="none" />
-      </svg>
+    <div class="loader">
+        <div class="spinner"></div>
+        <div class="loader-text">Initializing WAYNE AI Assistant...</div>
     </div>
-
-    <h1>WAYNE AI</h1>
-    <p class="subtitle">Initializing Power Assistant</p>
-
-    <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Loading progress">
-      <div class="progress"></div>
-    </div>
-
-    <p class="status-text" aria-live="polite"></p>
-  </div>
-
-  <script>
-    // Redirect after 3 seconds
-    setTimeout(() => {
-      window.location.href = 'public/main.html';
-    }, 3000);
-
-    const statusTexts = [
-      "Loading neural networks...",
-      "Connecting to Gemini API...",
-      "Initializing OpenAI...",
-      "Preparing Stability AI...",
-      "Almost ready..."
-    ];
-
-    const statusElement = document.querySelector('.status-text');
-    let currentIndex = 0;
-
-    function fadeStatusText() {
-      statusElement.classList.remove('fade-in');
-      statusElement.classList.add('fade-out');
-      
-      setTimeout(() => {
-        statusElement.textContent = statusTexts[currentIndex];
-        statusElement.classList.remove('fade-out');
-        statusElement.classList.add('fade-in');
-        currentIndex = (currentIndex + 1) % statusTexts.length;
-      }, 500);
-    }
-
-    // Initial set
-    statusElement.textContent = statusTexts[currentIndex];
-    statusElement.classList.add('fade-in');
-    currentIndex++;
-
-    setInterval(fadeStatusText, 1800);
-  </script>
+    
+    <script>
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                window.location.href = 'main.html';
+            }, 2000);
+        });
+    </script>
 </body>
 </html>
