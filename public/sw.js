@@ -1,4 +1,4 @@
-// public/sw.js
+//  public/sw.js
 const CACHE_NAME = 'wayne-ai-v1';
 const ASSETS = [
   '/',
