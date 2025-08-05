@@ -5,6 +5,10 @@ compatibility_date = "2025-08-05"
 
 [vars]
 ENV = "production"
+# Optional: Add these if you need to reference them in your worker
+OPENAI_API_KEY = "@@OPENAI_API_KEY"
+GEMINI_API_KEY = "@@GEMINI_API_KEY"
+STABILITY_API_KEY = "@@STABILITY_API_KEY"
 
 [triggers]
 routes = ["https://wayne-ai-assistant.mysvm.workers.dev/*"]
