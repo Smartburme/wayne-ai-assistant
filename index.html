@@ -4,52 +4,242 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WAYNE AI - Loading</title>
-    <link rel="icon" href="assets/images/icon.png">
+    <link rel="icon" href="public/assets/images/icon.png">
+    <meta name="theme-color" content="#121212">
     <style>
-        .loader {
+        :root {
+            --primary: #3a86ff;
+            --background: #121212;
+            --text: #f8f9fa;
+            --accent: #8338ec;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .loader-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #121212;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            z-index: 1000;
+            background: linear-gradient(135deg, var(--background) 0%, #1a1a1a 100%);
+        }
+        
+        .logo-container {
+            display: flex;
             flex-direction: column;
-            z-index: 9999;
+            align-items: center;
+            margin-bottom: 2rem;
+            transform: translateY(-20px);
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards 0.3s;
         }
-        .spinner {
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #3498db;
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 10px rgba(58, 134, 255, 0.5));
+        }
+        
+        .logo-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+        }
+        
+        .loader {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin-bottom: 2rem;
+        }
+        
+        .loader-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
+            border: 8px solid transparent;
+            border-top-color: var(--primary);
+            animation: spin 1.5s linear infinite;
         }
+        
+        .loader-circle:nth-child(2) {
+            border-top-color: var(--accent);
+            animation-delay: 0.2s;
+            width: 90%;
+            height: 90%;
+            top: 5%;
+            left: 5%;
+        }
+        
+        .loader-circle:nth-child(3) {
+            border-top-color: rgba(58, 134, 255, 0.5);
+            animation-delay: 0.4s;
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+        }
+        
+        .progress-container {
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out forwards 0.8s;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        
+        .status-text {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            max-width: 300px;
+            line-height: 1.5;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out forwards 1s;
+        }
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        .loader-text {
-            color: white;
-            margin-top: 20px;
-            font-family: Arial, sans-serif;
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .logo {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .logo-text {
+                font-size: 2rem;
+            }
+            
+            .loader {
+                width: 100px;
+                height: 100px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="loader">
-        <div class="spinner"></div>
-        <div class="loader-text">Initializing WAYNE AI Assistant...</div>
+    <div class="loader-container">
+        <div class="logo-container">
+            <img src="public/assets/images/icon.png" alt="WAYNE AI Logo" class="logo">
+            <h1 class="logo-text">WAYNE AI</h1>
+        </div>
+        
+        <div class="loader">
+            <div class="loader-circle"></div>
+            <div class="loader-circle"></div>
+            <div class="loader-circle"></div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        
+        <p class="status-text" id="status-text">Initializing AI systems...</p>
     </div>
     
     <script>
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                window.location.href = "../public/main.html";
-            }, 2000);
-        });
+        // Status messages for loading sequence
+        const statusMessages = [
+            "Loading neural networks...",
+            "Connecting to knowledge base...",
+            "Optimizing response algorithms...",
+            "Almost ready...",
+            "WAYNE AI is ready to assist you!"
+        ];
+        
+        // Progress simulation
+        const progressBar = document.getElementById('progress-bar');
+        const statusText = document.getElementById('status-text');
+        let progress = 0;
+        let currentStatus = 0;
+        
+        // Simulate loading progress
+        const interval = setInterval(() => {
+            progress += Math.random() * 10;
+            if (progress > 100) progress = 100;
+            progressBar.style.width = `${progress}%`;
+            
+            // Update status text at certain intervals
+            if (progress > (currentStatus + 1) * 20 && currentStatus < statusMessages.length - 1) {
+                currentStatus++;
+                statusText.textContent = statusMessages[currentStatus];
+            }
+            
+            // Complete loading
+            if (progress >= 100) {
+                clearInterval(interval);
+                setTimeout(() => {
+                    window.location.href = 'public/main.html';
+                }, 800);
+            }
+        }, 200);
+        
+        // Fallback in case something goes wrong
+        setTimeout(() => {
+            if (progress < 100) {
+                clearInterval(interval);
+                progressBar.style.width = '100%';
+                statusText.textContent = "WAYNE AI is ready to assist you!";
+                setTimeout(() => {
+                    window.location.href = 'public/main.html';
+                }, 800);
+            }
+        }, 5000);
     </script>
 </body>
 </html>
