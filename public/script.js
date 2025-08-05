@@ -15,14 +15,16 @@ class WAYNEAssistant {
         this.chatContainer = document.getElementById('chat-container');
         this.historyList = document.getElementById('history-list');
         this.aiModelSelect = document.getElementById('ai-model');
-        this.clearBtn = document.querySelector('.clear-btn');
         this.newChatBtn = document.querySelector('.new-chat-btn');
         this.fileUpload = document.getElementById('file-upload');
-        this.welcomeMessage = document.querySelector('.welcome-message');
+        this.attachBtn = document.querySelector('.attach-btn');
+        this.welcomeScreen = document.querySelector('.welcome-screen');
+        this.promptButtons = document.querySelectorAll('.prompt-btn');
     }
 
     setupEventListeners() {
         this.sendButton.addEventListener('click', () => this.sendMessage());
+        
         this.messageInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -30,11 +32,14 @@ class WAYNEAssistant {
             }
         });
         
-        this.clearBtn.addEventListener('click', () => this.clearConversation());
         this.newChatBtn.addEventListener('click', () => this.startNewChat());
+        this.attachBtn.addEventListener('click', () => this.fileUpload.click());
         
-        this.aiModelSelect.addEventListener('change', () => {
-            this.addSystemMessage(`Model changed to ${this.getSelectedModel()}`);
+        this.promptButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                this.messageInput.value = e.target.textContent;
+                this.messageInput.focus();
+            });
         });
     }
 
@@ -49,27 +54,28 @@ class WAYNEAssistant {
 
     handleFileUpload(files) {
         const previewContainer = document.createElement('div');
-        previewContainer.className = 'image-preview';
+        previewContainer.className = 'file-preview';
         
         Array.from(files).forEach(file => {
             if (file.type.startsWith('image/')) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
+                    const previewItem = document.createElement('div');
+                    previewItem.className = 'preview-item';
+                    
                     const img = document.createElement('img');
                     img.src = e.target.result;
                     img.className = 'preview-image';
-                    previewContainer.appendChild(img);
+                    
+                    previewItem.appendChild(img);
+                    previewContainer.appendChild(previewItem);
                 };
                 reader.readAsDataURL(file);
             }
         });
         
         this.chatContainer.appendChild(previewContainer);
-        this.addSystemMessage(`${files.length} image(s) uploaded`);
-    }
-
-    getSelectedModel() {
-        return this.aiModelSelect.value;
+        this.addSystemMessage(`${files.length} file(s) uploaded`);
     }
 
     async sendMessage() {
@@ -79,8 +85,8 @@ class WAYNEAssistant {
         this.addMessage(message, true);
         this.messageInput.value = '';
         
-        if (this.welcomeMessage) {
-            this.welcomeMessage.style.display = 'none';
+        if (this.welcomeScreen) {
+            this.welcomeScreen.style.display = 'none';
         }
         
         try {
@@ -118,17 +124,9 @@ class WAYNEAssistant {
         const data = await response.json();
         this.hideTypingIndicator();
         
-        // Process response based on model
-        switch(model) {
-            case 'openai':
-                return data.choices[0]?.message?.content || "No response content";
-            case 'gemini':
-                return data.candidates[0]?.content?.parts[0]?.text || "No response content";
-            case 'stability':
-                return data.artifacts[0]?.base64 || "No image generated";
-            default:
-                return "Unknown model response";
-        }
+        return data.choices?.[0]?.message?.content || 
+               data.candidates?.[0]?.content?.parts?.[0]?.text || 
+               "I couldn't generate a response. Please try again.";
     }
 
     addMessage(text, isUser) {
@@ -138,32 +136,30 @@ class WAYNEAssistant {
         const now = new Date();
         const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         
-        // Sanitize text output (basic XSS protection)
-        const sanitizedText = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        
         messageDiv.innerHTML = `
-            <div>${sanitizedText}</div>
+            <div>${this.sanitizeText(text)}</div>
             <div class="message-time">${isUser ? 'You' : 'WAYNE'} • ${timeString}</div>
         `;
         
         this.chatContainer.appendChild(messageDiv);
         this.chatContainer.scrollTop = this.chatContainer.scrollHeight;
         
-        // Add to conversation history
         this.currentConversation.push({
             role: isUser ? 'user' : 'assistant',
             content: text,
-            timestamp: now.toISOString(),
-            model: isUser ? null : this.getSelectedModel()
+            timestamp: now.toISOString()
         });
-        
-        // Update history list
-        this.updateHistoryList();
+    }
+
+    sanitizeText(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 
     addSystemMessage(text) {
         const messageDiv = document.createElement('div');
-        messageDiv.className = 'message system-message';
+        messageDiv.className = 'system-message';
         messageDiv.textContent = text;
         this.chatContainer.appendChild(messageDiv);
         this.chatContainer.scrollTop = this.chatContainer.scrollHeight;
@@ -173,7 +169,6 @@ class WAYNEAssistant {
         this.isTyping = true;
         const typingDiv = document.createElement('div');
         typingDiv.className = 'typing-indicator';
-        typingDiv.id = 'typing-indicator';
         typingDiv.innerHTML = `
             <div class="typing-dots">
                 <span></span>
@@ -187,7 +182,7 @@ class WAYNEAssistant {
 
     hideTypingIndicator() {
         this.isTyping = false;
-        const typingIndicator = document.getElementById('typing-indicator');
+        const typingIndicator = document.querySelector('.typing-indicator');
         if (typingIndicator) {
             typingIndicator.remove();
         }
@@ -197,21 +192,16 @@ class WAYNEAssistant {
         if (this.currentConversation.length > 0) {
             if (confirm('Start a new chat? Your current conversation will be saved.')) {
                 this.saveConversation();
-                this.currentConversation = [];
-                this.chatContainer.innerHTML = '';
-                this.welcomeMessage.style.display = 'block';
+                this.resetChat();
             }
         }
     }
 
-    clearConversation() {
-        if (confirm('Clear all conversations? This cannot be undone.')) {
-            this.currentConversation = [];
-            localStorage.removeItem('wayneConversations');
-            this.chatContainer.innerHTML = '';
-            this.historyList.innerHTML = '';
-            this.welcomeMessage.style.display = 'block';
-            this.addSystemMessage('All conversations cleared');
+    resetChat() {
+        this.currentConversation = [];
+        this.chatContainer.innerHTML = '';
+        if (this.welcomeScreen) {
+            this.welcomeScreen.style.display = 'flex';
         }
     }
 
@@ -219,22 +209,20 @@ class WAYNEAssistant {
         try {
             let conversations = JSON.parse(localStorage.getItem('wayneConversations')) || [];
             
-            // Add current conversation
             if (this.currentConversation.length > 0) {
                 conversations.push({
                     id: Date.now(),
                     title: this.generateConversationTitle(),
                     messages: this.currentConversation,
-                    timestamp: new Date().toISOString(),
-                    model: this.getSelectedModel()
+                    timestamp: new Date().toISOString()
                 });
                 
-                // Keep only last 20 conversations
                 if (conversations.length > 20) {
                     conversations = conversations.slice(-20);
                 }
                 
                 localStorage.setItem('wayneConversations', JSON.stringify(conversations));
+                this.updateHistoryList(conversations);
             }
         } catch (e) {
             console.error('Failed to save conversation:', e);
@@ -250,11 +238,7 @@ class WAYNEAssistant {
         }
     }
 
-    updateHistoryList(conversations = null) {
-        if (!conversations) {
-            conversations = JSON.parse(localStorage.getItem('wayneConversations')) || [];
-        }
-        
+    updateHistoryList(conversations) {
         this.historyList.innerHTML = '';
         
         conversations.forEach(conv => {
@@ -269,10 +253,8 @@ class WAYNEAssistant {
     }
 
     loadConversation(conversation) {
+        this.resetChat();
         this.currentConversation = conversation.messages;
-        this.aiModelSelect.value = conversation.model;
-        this.chatContainer.innerHTML = '';
-        this.welcomeMessage.style.display = 'none';
         
         conversation.messages.forEach(msg => {
             this.addMessage(msg.content, msg.role === 'user');
