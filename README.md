@@ -64,17 +64,24 @@ npm run deploy
 ## 🛠 Project Structure
 
 ```
-.
-├── worker/               # Cloudflare Worker code
-│   └── index.js          # Main worker logic
-├── public/               # Frontend assets
-│   ├── index.html        # Main interface
-│   ├── styles.css        # CSS styles
-│   └── script.js         # Frontend logic
-├── .github/workflows/    # CI/CD pipelines
-│   └── deploy.yml        # Deployment workflow
-├── wrangler.toml         # Worker configuration
-└── package.json          # Node.js dependencies
+wayne-ai-assistant/
+├── public/
+│   ├── assets/
+│   │   ├── images/
+│   │   │   └── icon.png
+│   │   └── styles/
+│   │       └── styles.css
+│   ├── scripts/
+│   │   ├── script.ts
+│   │   └── worker.ts
+│   ├── index.html (loader)
+│   └── main.html (main chat page)
+├── src/
+│   └── worker.js
+├── wrangler.toml
+├── package.json
+├── tsconfig.json
+└── README.md
 ```
 
 ## 🔒 Security Notes
