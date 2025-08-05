@@ -1,58 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WAYNE - AI Power Assistant</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WAYNE - AI Power Assistant</title>
+    <meta name="description" content="Multi-model AI assistant powered by OpenAI, Gemini, and Stability AI">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <meta name="theme-color" content="#6e48aa">
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>WAYNE</h1>
-      <p class="subtitle">AI Power Assistant</p>
-      <div class="model-selector">
-        <select id="ai-model">
-          <option value="gemini">Gemini</option>
-          <option value="openai">OpenAI</option>
-          <option value="stability">Stability AI</option>
-        </select>
-      </div>
-    </header>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>WAYNE</h1>
+                <p class="subtitle">AI Power Assistant</p>
+            </div>
+            <div class="model-selector">
+                <select id="ai-model" aria-label="Select AI model">
+                    <option value="gemini">Gemini</option>
+                    <option value="openai">OpenAI</option>
+                    <option value="stability">Stability AI</option>
+                </select>
+            </div>
+            <button id="clear-button" class="clear-btn" title="Clear conversation" aria-label="Clear conversation">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            </button>
+        </header>
 
-    <div class="chat-container">
-      <div class="chat-header">
-        <span>WAYNE Console</span>
-        <div class="status-indicator" id="status-indicator"></div>
-      </div>
-      
-      <div class="chat-messages" id="chat-messages">
-        <div class="message ai-message">
-          <div>Hello! I'm WAYNE, your AI Power Assistant. How can I help you today?</div>
-          <div class="message-time">System</div>
+        <div class="chat-container">
+            <div class="chat-header">
+                <span>WAYNE Console</span>
+                <div class="status-indicator" id="status-indicator" aria-label="Connection status"></div>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages">
+                <!-- Messages will be inserted here by JavaScript -->
+            </div>
+            
+            <div class="typing-indicator" id="typing-indicator" aria-hidden="true">
+                <div class="typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            
+            <div class="chat-input">
+                <input 
+                    type="text" 
+                    id="message-input" 
+                    placeholder="Ask WAYNE anything..." 
+                    autocomplete="off"
+                    aria-label="Type your message"
+                >
+                <button id="send-button" aria-label="Send message">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
         </div>
-      </div>
-      
-      <div class="typing-indicator" id="typing-indicator">
-        <div class="typing-dots">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-      </div>
-      
-      <div class="chat-input">
-        <input type="text" id="message-input" placeholder="Ask WAYNE anything..." autocomplete="off">
-        <button id="send-button">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="22" y1="2" x2="11" y2="13"></line>
-            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-          </svg>
-        </button>
-      </div>
+
+        <footer class="app-footer">
+            <p>WAYNE AI Assistant v1.0</p>
+            <p class="disclaimer">Responses may contain inaccuracies. Use discretion.</p>
+        </footer>
     </div>
-  </div>
 
-  <script src="script.js"></script>
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+    </script>
+
+    <!-- Main Application Script -->
+    <script src="script.js"></script>
 </body>
 </html>
