@@ -1,33 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>WAYNE AI Assistant</title>
-  <link rel="stylesheet" href="public/style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WAYNE Chat Assistant</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <div class="app-container">
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <h2>WAYNE AI</h2>
-      <button id="new-chat">+ New Chat</button>
-      <div id="history"></div>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <button id="newChatBtn" class="sidebar-btn">
+                <i class="fas fa-plus"></i> New Chat
+            </button>
+            <div class="history-container">
+                <h3>Chat History</h3>
+                <div id="chatHistory" class="history-list">
+                    <!-- History items will be added here dynamically -->
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <i class="fas fa-user-circle"></i>
+                    <span>User</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Chat Area -->
+        <div class="main-content">
+            <header class="chat-header">
+                <h1>WAYNE Assistant</h1>
+                <div class="loader hidden" id="headerLoader">
+                    <div class="loader-dot"></div>
+                    <div class="loader-dot"></div>
+                    <div class="loader-dot"></div>
+                </div>
+            </header>
+            
+            <div class="chat-container">
+                <div id="chatBox" class="chat-box">
+                    <!-- Messages will appear here -->
+                </div>
+                
+                <div class="input-container">
+                    <div class="input-area">
+                        <input type="text" id="userInput" placeholder="Ask me anything...">
+                        <button id="sendButton">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <div class="disclaimer">
+                        WAYNE may produce inaccurate information. Verify critical information.
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Main Chat Interface -->
-    <div class="chat-container">
-      <div class="chat-body" id="chat-body">
-        <!-- Chat messages injected here -->
-      </div>
-
-      <form id="chat-form">
-        <input type="text" id="user-input" placeholder="Ask something..." autocomplete="off" />
-        <button type="submit">Send</button>
-      </form>
-    </div>
-  </div>
-
-  <script src="public/script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
