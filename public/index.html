@@ -3,91 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WAYNE - AI Power Assistant</title>
-    <meta name="description" content="Multi-model AI assistant powered by OpenAI, Gemini, and Stability AI">
+    <title>WAYNE - AI Assistant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <meta name="theme-color" content="#6e48aa">
+    <link rel="icon" href="favicon.ico">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="header-content">
-                <h1>WAYNE</h1>
-                <p class="subtitle">AI Power Assistant</p>
-            </div>
-            <div class="model-selector">
-                <select id="ai-model" aria-label="Select AI model">
-                    <option value="gemini">Gemini</option>
-                    <option value="openai">OpenAI</option>
-                    <option value="stability">Stability AI</option>
-                </select>
-            </div>
-            <button id="clear-button" class="clear-btn" title="Clear conversation" aria-label="Clear conversation">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                </svg>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <button class="new-chat-btn">
+                <i class="fas fa-plus"></i> New chat
             </button>
-        </header>
-
-        <div class="chat-container">
-            <div class="chat-header">
-                <span>WAYNE Console</span>
-                <div class="status-indicator" id="status-indicator" aria-label="Connection status"></div>
+            
+            <div class="history-container">
+                <h3>History</h3>
+                <ul class="history-list" id="history-list">
+                    <!-- History items will be added here dynamically -->
+                </ul>
             </div>
             
-            <div class="chat-messages" id="chat-messages">
-                <!-- Messages will be inserted here by JavaScript -->
-            </div>
-            
-            <div class="typing-indicator" id="typing-indicator" aria-hidden="true">
-                <div class="typing-dots">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            </div>
-            
-            <div class="chat-input">
-                <input 
-                    type="text" 
-                    id="message-input" 
-                    placeholder="Ask WAYNE anything..." 
-                    autocomplete="off"
-                    aria-label="Type your message"
-                >
-                <button id="send-button" aria-label="Send message">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="22" y1="2" x2="11" y2="13"></line>
-                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                    </svg>
+            <div class="sidebar-footer">
+                <button class="upload-btn">
+                    <i class="fas fa-upload"></i> Upload Photos
+                </button>
+                <button class="clear-btn">
+                    <i class="fas fa-trash"></i> Clear Conversations
                 </button>
             </div>
         </div>
 
-        <footer class="app-footer">
-            <p>WAYNE AI Assistant v1.0</p>
-            <p class="disclaimer">Responses may contain inaccuracies. Use discretion.</p>
-        </footer>
+        <!-- Main Chat Area -->
+        <div class="main-content">
+            <header class="chat-header">
+                <h1>WAYNE AI</h1>
+                <div class="model-selector">
+                    <select id="ai-model">
+                        <option value="gemini">Gemini</option>
+                        <option value="openai">GPT-4</option>
+                        <option value="stability">Stable Diffusion</option>
+                    </select>
+                </div>
+            </header>
+
+            <div class="chat-container" id="chat-container">
+                <!-- Welcome message -->
+                <div class="welcome-message">
+                    <h2>Hello! I'm WAYNE</h2>
+                    <p>Your AI Power Assistant. How can I help you today?</p>
+                </div>
+                
+                <!-- Messages will appear here -->
+            </div>
+
+            <div class="input-container">
+                <div class="file-upload-container">
+                    <label for="file-upload" class="file-upload-btn">
+                        <i class="fas fa-paperclip"></i>
+                    </label>
+                    <input type="file" id="file-upload" accept="image/*" multiple>
+                </div>
+                <input type="text" id="message-input" placeholder="Ask WAYNE anything..." autocomplete="off">
+                <button id="send-button">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
     </div>
 
-    <!-- Service Worker Registration -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registration successful');
-                    })
-                    .catch(err => {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
-        }
-    </script>
-
-    <!-- Main Application Script -->
     <script src="script.js"></script>
 </body>
 </html>
