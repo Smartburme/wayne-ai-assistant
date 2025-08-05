@@ -1,0 +1,32 @@
+name = "wayne-ai-assistant"
+main = "worker/index.js"
+compatibility_date = "2024-03-01"
+
+[build]
+command = "echo 'No build needed for JavaScript worker'"
+
+[env]
+# These will be set via GitHub Actions secrets
+OPENAI_API_KEY = "@@OPENAI_API_KEY"
+GEMINI_API_KEY = "@@GEMINI_API_KEY"
+STABILITY_API_KEY = "@@STABILITY_API_KEY"
+
+[vars]
+AI_ASSISTANT_NAME = "WAYNE"
+DEFAULT_MODEL = "gemini"
+MAX_REQUEST_SIZE = "1MB"
+
+[[routers]]
+rule = "/*"
+script = "wayne-ai-assistant"
+
+[triggers]
+crons = []
+
+[limits]
+cpu_ms = 50
+
+# For production deployment
+[deployment]
+environment = "production"
+workers_dev = true
