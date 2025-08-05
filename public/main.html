@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WAYNE AI Assistant</title>
+    <link rel="icon" href="assets/images/icon.png">
+    <link rel="stylesheet" href="assets/styles/styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="logo-container">
+                <img src="assets/images/icon.png" alt="WAYNE AI Logo" class="logo">
+                <h1>WAYNE AI</h1>
+            </div>
+            <nav class="main-nav">
+                <button id="new-chat-btn" class="nav-btn">New Chat</button>
+                <button id="history-btn" class="nav-btn">History</button>
+                <button id="settings-btn" class="nav-btn">Settings</button>
+            </nav>
+        </header>
+
+        <main class="chat-container">
+            <div id="chat-history" class="chat-history"></div>
+            <div class="input-container">
+                <input type="text" id="user-input" placeholder="Ask WAYNE anything...">
+                <button id="send-btn">Send</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="scripts/script.js" type="module"></script>
+</body>
+</html>
