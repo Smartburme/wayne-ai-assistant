@@ -3,12 +3,42 @@ account_id = "c58ef0375e8c53127a457a3b155dd006"
 workers_dev = true
 compatibility_date = "2025-08-05"
 
-[vars]
-ENV = "production"
-# Optional: Add these if you need to reference them in your worker
-OPENAI_API_KEY = "@@OPENAI_API_KEY"
-GEMINI_API_KEY = "@@GEMINI_API_KEY"
-STABILITY_API_KEY = "@@STABILITY_API_KEY"
+# wrangler.toml
+
+[env.production]
+# AI Provider Secrets
+vars = {
+  GEMINI_API_KEY = "@@GEMINI_API_KEY",
+  STABILITY_API_KEY = "@@STABILITY_API_KEY",
+  OPENAI_API_KEY = "@@OPENAI_API_KEY"
+}
+
+# KV Namespaces
+kv_namespaces = [
+  { binding = "MY_KV", id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" },
+  { binding = "BURNE_AI_KV", id = "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy" }
+]
+
+# R2 Buckets (Images)
+r2_buckets = [
+  { binding = "MY_IMAGES", bucket_name = "wayne-ai-images" }
+]
+
+# Workers AI Integration
+ai = { binding = "AI" }
+
+# Service Bindings
+services = [
+  { binding = "WAYNE_SERVICE", service = "wayne-ai-service" }
+]
+
+# Browser Rendering
+browser = { binding = "WAYNE_BINDING" }
+
+# Version Metadata
+[metadata]
+version = "1.0.0"
+environment = "production"
 
 [triggers]
 routes = ["https://wayne-ai-assistant.mysvm.workers.dev/*"]
