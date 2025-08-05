@@ -1,111 +1,115 @@
 export default {
-  async fetch(request, env, ctx) {
-    const url = new URL(request.url);
-    
-    // Handle API requests
-    if (url.pathname.startsWith('/api/')) {
-      return handleAPIRequest(request, env);
+  async fetch(request, env) {
+    try {
+      const url = new URL(request.url);
+      
+      // Handle API requests
+      if (url.pathname === '/api/chat') {
+        return handleChatRequest(request, env);
+      }
+      
+      // Serve frontend from GitHub Pages
+      const frontendUrl = 'https://smartburme.github.io/wayne-ai-assistant' + url.pathname;
+      return fetch(frontendUrl);
+
+    } catch (err) {
+      // Enhanced error logging
+      console.error('Worker Error:', err);
+      return new Response(JSON.stringify({
+        error: err.message,
+        stack: err.stack
+      }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
-    
-    // Serve static assets
-    return fetchAsset(request);
   }
 };
 
-async function handleAPIRequest(request, env) {
+async function handleChatRequest(request, env) {
+  // Verify the request method
+  if (request.method !== 'POST') {
+    return new Response('Method not allowed', { status: 405 });
+  }
+  
   try {
-    const { message, model = 'gemini', options = {} } = await request.json();
+    const { message, model = 'gemini' } = await request.json();
     
+    // Validate the input
+    if (!message || typeof message !== 'string') {
+      return new Response('Invalid message format', { status: 400 });
+    }
+
+    // Call the appropriate AI API
+    let response;
     switch (model.toLowerCase()) {
       case 'openai':
-        return handleOpenAIRequest(message, env, options);
+        response = await callOpenAI(message, env.OPENAI_API_KEY);
+        break;
       case 'gemini':
-        return handleGeminiRequest(message, env, options);
-      case 'stability':
-        return handleStabilityRequest(message, env, options);
+        response = await callGemini(message, env.GEMINI_API_KEY);
+        break;
       default:
-        return new Response('Invalid model specified', { status: 400 });
+        return new Response('Unsupported model', { status: 400 });
     }
+
+    return new Response(JSON.stringify(response), {
+      headers: { 'Content-Type': 'application/json' }
+    });
+
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), {
+    console.error('API Error:', err);
+    return new Response(JSON.stringify({ 
+      error: err.message,
+      details: err.response?.statusText || 'No additional details'
+    }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
     });
   }
 }
 
-async function handleOpenAIRequest(prompt, env, options) {
+// Improved API call functions with better error handling
+async function callOpenAI(prompt, apiKey) {
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${env.OPENAI_API_KEY}`
+      'Authorization': `Bearer ${apiKey}`
     },
     body: JSON.stringify({
-      model: options.model || 'gpt-4',
+      model: 'gpt-3.5-turbo',
       messages: [{ role: 'user', content: prompt }],
-      temperature: options.temperature || 0.7,
-      ...options
+      temperature: 0.7
     })
   });
-  
-  const data = await response.json();
-  return new Response(JSON.stringify(data), {
-    headers: { 'Content-Type': 'application/json' }
-  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(`OpenAI API error: ${errorData.error?.message || response.statusText}`);
+  }
+
+  return await response.json();
 }
 
-async function handleGeminiRequest(prompt, env, options) {
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${env.GEMINI_API_KEY}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{
-        parts: [{ text: prompt }]
-      }],
-      safetySettings: options.safetySettings || [],
-      generationConfig: options.generationConfig || {}
-    })
-  });
-  
-  const data = await response.json();
-  return new Response(JSON.stringify(data), {
-    headers: { 'Content-Type': 'application/json' }
-  });
-}
+async function callGemini(prompt, apiKey) {
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{ text: prompt }]
+        }]
+      })
+    }
+  );
 
-async function handleStabilityRequest(prompt, env, options) {
-  const response = await fetch('https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${env.STABILITY_API_KEY}`,
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify({
-      text_prompts: [{ text: prompt }],
-      cfg_scale: options.cfg_scale || 7,
-      height: options.height || 1024,
-      width: options.width || 1024,
-      steps: options.steps || 30,
-      ...options
-    })
-  });
-  
-  const data = await response.json();
-  return new Response(JSON.stringify(data), {
-    headers: { 'Content-Type': 'application/json' }
-  });
-}
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(`Gemini API error: ${errorData.error?.message || response.statusText}`);
+  }
 
-async function fetchAsset(request) {
-  // In production, this would fetch from your static assets
-  const html = `<!DOCTYPE html><html><body>
-    <h1>WAYNE AI Power Assistant</h1>
-    <p>Worker is running. Use the frontend to interact.</p>
-  </body></html>`;
-  
-  return new Response(html, {
-    headers: { 'Content-Type': 'text/html' }
-  });
+  return await response.json();
       }
