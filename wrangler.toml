@@ -1,51 +1,54 @@
-name = "wayne-ai-assistant"
-account_id = "c58ef0375e8c53127a457a3b155dd006"
-workers_dev = true
-compatibility_date = "2025-08-05"
-
 # wrangler.toml
 
-[env.production]
-# AI Provider Secrets
-vars = {
-  GEMINI_API_KEY = "@@GEMINI_API_KEY",
-  STABILITY_API_KEY = "@@STABILITY_API_KEY",
-  OPENAI_API_KEY = "@@OPENAI_API_KEY"
-}
+name = "wayne-ai-assistant"
+main = "src/worker.js"
+compatibility_date = "2025-08-05"
+account_id = "c58ef0375e8c53127a457a3b155dd006"
+workers_dev = true
 
-# KV Namespaces
-kv_namespaces = [
-  { binding = "MY_KV", id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" },
-  { binding = "BURNE_AI_KV", id = "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy" }
-]
+[build]
+command = "npm install && npm run build"
+upload.format = "service-worker"
+upload.dir = "public"
 
-# R2 Buckets (Images)
-r2_buckets = [
-  { binding = "MY_IMAGES", bucket_name = "wayne-ai-images" }
-]
+[site]
+bucket = "./public"
+entry-point = "./src"
 
-# Workers AI Integration
-ai = { binding = "AI" }
+[observability]
+enabled = true
 
-# Service Bindings
-services = [
-  { binding = "WAYNE_SERVICE", service = "wayne-ai-service" }
-]
+[observability.logs]
+include = ["fetch", "exception", "request", "console"]
+fields = ["event", "exception", "requestId", "outcome", "duration", "cpuTime"]
 
-# Browser Rendering
-browser = { binding = "WAYNE_BINDING" }
+[kv_namespaces]
+binding = "CHAT_HISTORY"
+id = "871236707f7d480fa84f129e9caa4099"
+preview_id = "abcdef1234567890abcdef1234567890"  # Replace with your preview KV ID
 
-# Version Metadata
-[metadata]
-version = "1.0.0"
-environment = "production"
+# Additional KV namespaces if needed
+# [[kv_namespaces]]
+# binding = "USER_PREFERENCES"
+# id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+[vars]
+ENV = "production"
+DEFAULT_MODEL = "gpt-3.5-turbo"
+
+Secrets (set via wrangler secret put)
+OPENAI_API_KEY = "@@OPENAI_API_KEY"
+GEMINI_API_KEY = "@@GEMINI_API_KEY"
+STABILITY_API_KEY = "@@STABILITY_API_KEY"
 
 [triggers]
-routes = ["https://wayne-ai-assistant.mysvm.workers.dev/*"]
-
-# Optional settings for better dev experience
-[build]
-command = "npm install"
+crons = ["0 * * * *"]  # Hourly maintenance tasks
+routes = [
+  "wayne-ai-assistant.*.workers.dev/*",
+  "wayne-ai.example.com/*"  # Replace with your domain
+]
 
 [dev]
+ip = "localhost"
 port = 8787
+local_protocol = "https"
