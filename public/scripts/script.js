@@ -114,7 +114,7 @@ async function sendMessage() {
     
     try {
         // Call API endpoint
-        const response = await fetch('/api/chat', {
+        const response = await fetch('https://burme-ai.mysvm.workers.dev/api/chat', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
