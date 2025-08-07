@@ -114,13 +114,13 @@ async function sendMessage() {
     
     try {
         // Call API endpoint
-        const response = await fetch('https://burme-ai.mysvm.workers.dev/api/chat', {
+        const response = await fetch('https://burme-ai.mysvm.workers.dev', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                messages: currentChat.messages
+                messages: [...currentChat.messages, userMessage]
             }),
         });
         
@@ -136,7 +136,7 @@ async function sendMessage() {
         // Add AI response
         const aiMessage = {
             role: 'assistant',
-            content: data.response,
+            content: data.response || data.message || "I couldn't generate a response.",
             timestamp: new Date()
         };
         
