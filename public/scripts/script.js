@@ -113,7 +113,7 @@ async function sendMessage() {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
     
     try {
-        // Call API endpoint
+        // Clondflare worker API endpoint
         const response = await fetch('https://burme-ai.mysvm.workers.dev/api/chat', {
             method: 'POST',
             headers: {
